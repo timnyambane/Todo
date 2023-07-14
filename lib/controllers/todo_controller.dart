@@ -29,25 +29,32 @@ class TodoController extends GetxController {
     final int dateCreated = DateTime.now().millisecondsSinceEpoch;
     final int dueDate = dueDateTime?.millisecondsSinceEpoch ?? 0;
 
-    final newTask = Task(
-      title: title,
-      description: description,
-      dateCreated: dateCreated,
-      dueDate: dueDate,
-      isStarred: isStarred,
-    );
+    if (title.isEmpty) {
+      Get.snackbar("Warning", "Title cannot be empty",
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP);
+    } else {
+      final newTask = Task(
+        title: title,
+        description: description,
+        dateCreated: dateCreated,
+        dueDate: dueDate,
+        isStarred: isStarred,
+      );
 
-    await DatabaseHelper.instance.insertTask(newTask);
+      await DatabaseHelper.instance.insertTask(newTask);
 
-    titleController.clear();
-    descController.clear();
-    dueDateTime = null;
-    isStarred = false;
+      titleController.clear();
+      descController.clear();
+      dueDateTime = null;
+      isStarred = false;
 
-    debugPrint("Added successfully");
-    Navigator.pop(context);
+      debugPrint("Added successfully");
+      Navigator.pop(context);
 
-    fetchTasks();
+      fetchTasks();
+    }
   }
 
   void updateTask(Task task) async {

@@ -1,14 +1,14 @@
+import 'package:sqflite/sqflite.dart' as sqflite;
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:sqlprac/models/todo_model.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
-  static Database? _database;
+  static sqflite.Database? _database;
 
   DatabaseHelper._privateConstructor();
 
-  Future<Database?> get database async {
+  Future<sqflite.Database?> get database async {
     if (_database != null) {
       return _database;
     }
@@ -16,33 +16,28 @@ class DatabaseHelper {
     return _database;
   }
 
-  Future<Database> _initDatabase() async {
-    final databasesPath = await getDatabasesPath();
+  Future<sqflite.Database> _initDatabase() async {
+    final databasesPath = await sqflite.getDatabasesPath();
     final path = join(databasesPath, 'tasks.db');
 
-    return await openDatabase(
+    return await sqflite.openDatabase(
       path,
-      version: 2,
+      version: 1,
       onCreate: (db, version) {
-        return db.execute(
-          '''
+        return db.execute('''
           CREATE TABLE tasks(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT,
             description TEXT,
             dateCreated INTEGER,
             dueDate INTEGER,
-            isStarred INTEGER
+            isStarred INTEGER,
             isComplete INTEGER DEFAULT 0
           )
-          ''',
-        );
+        ''');
       },
       onUpgrade: (db, oldVersion, newVersion) {
-        if (oldVersion < 2) {
-          db.execute(
-              'ALTER TABLE tasks ADD COLUMN isComplete INTEGER DEFAULT 0');
-        }
+        // Handle database migration or upgrade logic here
       },
     );
   }
