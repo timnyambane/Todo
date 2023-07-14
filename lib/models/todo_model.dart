@@ -5,6 +5,7 @@ class Task {
   int dateCreated;
   int? dueDate;
   bool? isStarred;
+  bool isComplete;
 
   Task({
     this.id,
@@ -13,6 +14,7 @@ class Task {
     required this.dateCreated,
     this.dueDate,
     this.isStarred,
+    this.isComplete = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -23,6 +25,7 @@ class Task {
       'dateCreated': dateCreated,
       'dueDate': dueDate,
       'isStarred': isStarred == true ? 1 : 0,
+      'isComplete': isComplete == true ? 1 : 0,
     };
   }
 
@@ -34,6 +37,7 @@ class Task {
       dateCreated: map['dateCreated'],
       dueDate: map['dueDate'],
       isStarred: map['isStarred'] == 1,
+      isComplete: map['isComplete'] == 1,
     );
   }
 }

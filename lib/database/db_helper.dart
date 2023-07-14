@@ -1,6 +1,6 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:sqlprac/model/todo_model.dart';
+import 'package:sqlprac/models/todo_model.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
@@ -22,7 +22,7 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: (db, version) {
         return db.execute(
           '''
@@ -33,9 +33,16 @@ class DatabaseHelper {
             dateCreated INTEGER,
             dueDate INTEGER,
             isStarred INTEGER
+            isComplete INTEGER DEFAULT 0
           )
           ''',
         );
+      },
+      onUpgrade: (db, oldVersion, newVersion) {
+        if (oldVersion < 2) {
+          db.execute(
+              'ALTER TABLE tasks ADD COLUMN isComplete INTEGER DEFAULT 0');
+        }
       },
     );
   }
