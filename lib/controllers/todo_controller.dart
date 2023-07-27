@@ -31,8 +31,13 @@ class TodoController extends GetxController {
 
     if (title.isEmpty) {
       Get.snackbar("Warning", "Title cannot be empty",
-          backgroundColor: Colors.redAccent,
+          backgroundColor: Colors.blueGrey,
           colorText: Colors.white,
+          mainButton: TextButton(onPressed: () {}, child: const Text("Button")),
+          icon: const Icon(
+            Icons.bolt,
+            color: Colors.yellow,
+          ),
           snackPosition: SnackPosition.TOP);
     } else {
       final newTask = Task(

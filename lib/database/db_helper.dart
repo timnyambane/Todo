@@ -1,26 +1,26 @@
-import 'package:sqflite/sqflite.dart' as sqflite;
+import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:sqlprac/models/todo_model.dart';
 
 class DatabaseHelper {
-  static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
-  static sqflite.Database? _database;
+  static final DatabaseHelper instance = DatabaseHelper._init();
+  static Database? _database;
 
-  DatabaseHelper._privateConstructor();
+  DatabaseHelper._init();
 
-  Future<sqflite.Database?> get database async {
+  Future<Database?> get database async {
     if (_database != null) {
       return _database;
     }
-    _database = await _initDatabase();
+    _database = await _initDB();
     return _database;
   }
 
-  Future<sqflite.Database> _initDatabase() async {
-    final databasesPath = await sqflite.getDatabasesPath();
+  Future<Database> _initDB() async {
+    final databasesPath = await getDatabasesPath();
     final path = join(databasesPath, 'tasks.db');
 
-    return await sqflite.openDatabase(
+    return await openDatabase(
       path,
       version: 1,
       onCreate: (db, version) {
@@ -40,6 +40,11 @@ class DatabaseHelper {
         // Handle database migration or upgrade logic here
       },
     );
+  }
+
+  Future close() async {
+    final db = await instance.database;
+    db?.close();
   }
 
   Future<int> insertTask(Task task) async {
